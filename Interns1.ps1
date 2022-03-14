@@ -5,7 +5,7 @@ Write-Host " Creating OU for Interns"
 
 
 new-adorganizationalUnit -Name "Interns" -Path "DC=adatum, dc=com"
-
+##*************************************************************************************************
 Write-Host "************Creating Group****************"
 
 $groupname = Read-Host 'Name of the group you want to create'
@@ -17,7 +17,16 @@ elseif ($grouptype -eq 3){$grouptypeString = "Domainlocal"}
 else {$grouptypeString = "domainlocal"}
 
 new-adgroup -name $groupname  -GroupScope $grouptypeString
-Write-Host "$groupname group of type $grouptypeString has been created"
+##**************************************************************************************************
+
+$disabled = Search-ADAccount -AccountDisabled
+foreach ($account in $disabled)
+{
+   if( ($account.AccountExpirationDate) -lt (Get-Date).AddMonths(6)){"Good to reactivate" + $account.AccountExpirationDate + "$account.name"}
+    else{"Cant be activated  $account.AccountExpirationDate $account.name"}
+}
+
+##****************************************************************************
+New-ADUser -name "nirajc" -Enabled $false
 
 
-New-ADUser "Niraj" -Department IT
