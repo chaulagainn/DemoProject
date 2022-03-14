@@ -27,6 +27,18 @@ foreach ($account in $disabled)
 }
 
 ##****************************************************************************
-New-ADUser -name "nirajc" -Enabled $false
 
+$accName = Read-Host "username for account to check if its locked"
+$accobj = Get-ADUser -Identity $accName -Properties *
+
+Write-Host $accobj.ObjectGUID;
+
+
+$locked = Search-ADAccount -LockedOut
+foreach ($account in $locked)
+{
+    
+
+
+}
 
