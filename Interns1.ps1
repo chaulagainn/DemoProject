@@ -42,7 +42,40 @@ $locked = Search-ADAccount -LockedOut
 foreach ($account in $locked)
 {
     
-
+     Write-host "$locked.ToString() Account is locked"
 
 }
 
+######################################################################################
+##Netwrok Share
+
+$compName = "lon-svr1"
+
+Invoke-Command -ScriptBlock {
+New-Item "C:\SharedFolder" -Type Directory; New-SmbShare -Name "FolderShare" -Path "c:\sharedfolder"}  -ComputerName $compName 
+
+Invoke-Command -ScriptBlock {
+ New-SmbShare -Name "FolderShare" -Path "c:\sharedfolder"}  -ComputerName $compName
+
+ 
+ $s = New-PSSession -ComputerName lon-cl1 -Credential(get-credential)
+ Invoke-Command -Session $s  -ScriptBlock {
+   New-PSDrive -Name K -PSProvider FileSystem -Root \\lon-svr1\FolderShare -Persist}  
+
+
+
+ $s = New-PSSession -ComputerName lon-cl1 
+ Enter-pssession -session $s
+New-PSDrive -Name K -PSProvider FileSystem -Root \\lon-svr1\FolderShare -Persist -Credential adatum\administrator
+
+$username = "adatum\AdAdministrator"
+$password = ConvertTo-SecureString "Pa55w.rd" -AsPlainText -force
+$cred = New-Object System.management.Automation.PSCredential -ArgumentList ($username,$password)
+$inputs = @{
+            'Credential'  =   $cred
+            }
+                                                                                                                                                                                                                                                                                   
+
+ Invoke-Command -computername lon-cl1 -ScriptBlock { New-PSDrive -Name K -PSProvider FileSystem -Root \\lon-svr1\FolderShare -Persist @Using:inputs}
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                               
