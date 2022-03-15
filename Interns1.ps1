@@ -78,4 +78,8 @@ $inputs = @{
 
  Invoke-Command -computername lon-cl1 -ScriptBlock { New-PSDrive -Name K -PSProvider FileSystem -Root \\lon-svr1\FolderShare -Persist @Using:inputs}
 
+
+ ##############################################################################################################
+ Get-WmiObject -Class Win32_NetworkAdapterConfiguration -Filter "IPEnabled=true and DHCPEnabled=true" -ComputerName . | Where-Object -FilterScript {$_.DHCPServer -contains "192.168.1.254"} | ForEach-Object -Process {$_.InvokeMethod("ReleaseDHCPLease",$null)}
+
                                                                                                                                                                                                                                                                                                                                                                                                                                                                
