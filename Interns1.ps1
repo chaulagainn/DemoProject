@@ -30,8 +30,12 @@ foreach ($account in $disabled)
 
 $accName = Read-Host "username for account to check if its locked"
 $accobj = Get-ADUser -Identity $accName -Properties *
+    if ( $accobj.LockedOut -eq $true){Write-host "Account is Locked"}
+    else{Write-Host "Account not Locked"}
 
 Write-Host $accobj.ObjectGUID;
+
+##***************************************************************************
 
 
 $locked = Search-ADAccount -LockedOut
