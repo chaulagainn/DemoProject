@@ -1,8 +1,15 @@
-﻿########Stop and start process on remote host
+﻿########Stop and start services on remote host
 
-####step1 Get processes on a remote host
+####step1 Get services on a remote host
 
-Get-Process notepad | get-member
+$servicename = Read-Host "Service name (takes wildcard)"
+$computername1 = Read-Host "Enter Computername"
+$services = Get-service -ComputerName $computername1 -Name $servicename
+
+
+#########Step2 Stop service
+Start-Service -InputObject $services -Verbose
+
 
 
 ##############computer last logon
